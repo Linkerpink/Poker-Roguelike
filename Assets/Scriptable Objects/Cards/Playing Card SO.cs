@@ -8,6 +8,17 @@ public class PlayingCardSO : ScriptableObject
 {
     public string cardText;
     public int cardValue;
-    public Sprite cardSprite;
+
+    [HideInInspector] public enum Suits
+    {
+        Heart,
+        Club,
+        Spade,
+        Diamond,
+    }
+    public Suits suit;
+
+    public Sprite cardIcon;
+    public GameObject cardDesign;
     public Color cardColor;
 }

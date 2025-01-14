@@ -5,22 +5,15 @@ using UnityEngine.EventSystems;
 
 public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private RectTransform m_RectTransform;
-
     private bool m_mouseOver = false;
     private bool m_dragging = false;
     private Vector3 m_initialPosition;
 
-    [SerializeField] private float smoothTime = 0.5f;
+    private float smoothTime = 0.5f;
 
     private void Awake()
     {
-        m_RectTransform = GetComponent<RectTransform>();
-    }
-
-    private void Start()
-    {
-        m_initialPosition = m_RectTransform.position;
+        m_initialPosition = transform.position;
     }
 
     private void Update()
@@ -42,11 +35,11 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             Vector3 _mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, m_initialPosition.z));
 
-            m_RectTransform.position = Vector3.Slerp(m_RectTransform.position, new Vector3(_mousePos.x, _mousePos.y, m_initialPosition.z), smoothTime);
+            transform.position = Vector3.Slerp(transform.position, new Vector3(_mousePos.x, _mousePos.y, m_initialPosition.z), smoothTime);
         }
         else
         {
-            m_RectTransform.position = Vector3.Slerp(m_RectTransform.position, m_initialPosition, smoothTime);
+            transform.position = Vector3.Slerp(transform.position, m_initialPosition, smoothTime);
         }
     }
 
