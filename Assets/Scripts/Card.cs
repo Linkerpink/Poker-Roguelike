@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 
 public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    private Deck m_deck;
+
     private bool m_mouseOver = false;
     private bool m_dragging = false;
     private Vector3 m_initialPosition;
@@ -13,19 +15,23 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private void Awake()
     {
+        m_deck = FindObjectOfType<Deck>();
+
         m_initialPosition = transform.position;
     }
 
     private void Update()
     {
-        if (Input.GetMouseButton(0) && m_mouseOver)
+        if (Input.GetMouseButton(0) && m_mouseOver && !m_deck.isDragging)
         {
             m_dragging = true;
+            m_deck.ChangeDragging(true);
         }
 
         if (Input.GetMouseButtonUp(0)) 
         {
             m_dragging = false;
+            m_deck.ChangeDragging(false);
         }
     }
 
@@ -39,7 +45,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         else
         {
-            transform.position = Vector3.Slerp(transform.position, m_initialPosition, smoothTime);
+            transform.position = Vector3.Lerp(transform.position, m_initialPosition, smoothTime);
         }
     }
 

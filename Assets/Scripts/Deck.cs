@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Deck : MonoBehaviour
@@ -9,6 +10,10 @@ public class Deck : MonoBehaviour
     [SerializeField] private List<PlayingCardSO> m_playingCardSOList;
     private List<PlayingCardSO> m_handList = new List<PlayingCardSO>();
     private List<PlayingCardSO> m_remainingDeckCards = new List<PlayingCardSO>();
+
+    [SerializeField] private TextMeshProUGUI m_deckText;
+
+    public bool isDragging = false;
 
     private void Start()
     {
@@ -25,14 +30,24 @@ public class Deck : MonoBehaviour
 
     private PlayingCardSO ChooseRandomCard()
     {
-        PlayingCardSO _card;
+        if (m_remainingDeckCards.Count > 0)
+        {
+            PlayingCardSO _card;
         
-        _card = m_remainingDeckCards[Random.Range(0, m_remainingDeckCards.Count)];
+            _card = m_remainingDeckCards[Random.Range(0, m_remainingDeckCards.Count)];
 
-        m_handList.Add(_card);
-        m_remainingDeckCards.Remove(_card);
+            m_handList.Add(_card);
+            m_remainingDeckCards.Remove(_card);
 
-        return _card;
+            m_deckText.SetText(m_remainingDeckCards.Count.ToString() + " / " + m_playingCardSOList.Count.ToString());
+
+            return _card;
+        }
+        else
+        {
+            return null;
+        }
+        
     }
 
     private void AddCardToHand()
@@ -42,8 +57,15 @@ public class Deck : MonoBehaviour
         _playingCard.GetComponent<PlayingCard>().SetCardValues(ChooseRandomCard());
     }
 
-    private void SetCards()
+   private void SetCards()
     {
-        m_remainingDeckCards = m_playingCardSOList;
+        m_remainingDeckCards = new List<PlayingCardSO>(m_playingCardSOList);
+        m_deckText.SetText(m_remainingDeckCards.Count.ToString() + " / " + m_playingCardSOList.Count.ToString());
+    }
+
+
+    public void ChangeDragging(bool _dragging)
+    {
+        isDragging = _dragging;
     }
 }
