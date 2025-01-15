@@ -13,7 +13,6 @@ public class Deck : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI m_deckText;
 
-    public bool isDragging = false;
 
     private void Start()
     {
@@ -61,11 +60,5 @@ public class Deck : MonoBehaviour
     {
         m_remainingDeckCards = new List<PlayingCardSO>(m_playingCardSOList);
         m_deckText.SetText(m_remainingDeckCards.Count.ToString() + " / " + m_playingCardSOList.Count.ToString());
-    }
-
-
-    public void ChangeDragging(bool _dragging)
-    {
-        isDragging = _dragging;
     }
 }

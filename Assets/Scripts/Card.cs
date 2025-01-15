@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+
+//FIX GAME NOT CANVAS!!!
 public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private Deck m_deck;
+    private GameManager m_gameManager;
+
+    private RectTransform m_rectTransform;
 
     private bool m_mouseOver = false;
     private bool m_dragging = false;
@@ -15,38 +19,43 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private void Awake()
     {
-        m_deck = FindObjectOfType<Deck>();
+        m_gameManager = FindObjectOfType<GameManager>();
+        m_rectTransform = GetComponent<RectTransform>();
 
-        m_initialPosition = transform.position;
+        m_initialPosition = m_rectTransform.localPosition;
+        Debug.Log(m_initialPosition);
     }
 
     private void Update()
     {
-        if (Input.GetMouseButton(0) && m_mouseOver && !m_deck.isDragging)
+        if (Input.GetMouseButton(0) && m_mouseOver && !m_gameManager.isDragging)
         {
             m_dragging = true;
-            m_deck.ChangeDragging(true);
+            m_gameManager.ChangeDragging(true);
         }
 
         if (Input.GetMouseButtonUp(0)) 
         {
             m_dragging = false;
-            m_deck.ChangeDragging(false);
+            m_gameManager.ChangeDragging(false);
         }
-    }
 
-    private void FixedUpdate()
-    {
         if (m_dragging)
         {
-            Vector3 _mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, m_initialPosition.z));
-
-            transform.position = Vector3.Slerp(transform.position, new Vector3(_mousePos.x, _mousePos.y, m_initialPosition.z), smoothTime);
+            Vector3 _mousePos = Input.mousePosition;
+            _mousePos.z = 100;
+            
+            Debug.Log(new Vector3(_mousePos.x, _mousePos.y, m_rectTransform.position.z));
+            m_rectTransform.position = Vector3.Lerp(m_rectTransform.position, new Vector3(_mousePos.x, _mousePos.y, m_rectTransform.position.z), smoothTime * Time.deltaTime);
         }
         else
         {
-            transform.position = Vector3.Lerp(transform.position, m_initialPosition, smoothTime);
+            m_rectTransform.localPosition = Vector3.Lerp(m_rectTransform.localPosition, m_initialPosition, smoothTime * Time.deltaTime);
         }
+
+        // Debug.Log(m_initialPosition);
+
+        // Debug.Log(m_initialPosition);
     }
 
     public void OnPointerEnter(PointerEventData _eventData)
