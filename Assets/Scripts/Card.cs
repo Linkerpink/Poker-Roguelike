@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -11,7 +12,7 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private bool m_dragging = false;
     private Vector3 m_initialPosition;
 
-    private float smoothTime = 0.5f;
+    private float smoothTime = 0.05f;
 
     private void Awake()
     {
@@ -36,14 +37,21 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         if (m_dragging)
         {
-            Vector3 _mousePos = Input.mousePosition;
-            _mousePos.z = 100;
-            
-            transform.position = Vector3.Lerp(transform.position, new Vector3(_mousePos.x, _mousePos.y, transform.position.z), smoothTime * Time.deltaTime);
+            Vector3 _mousePos;
+            Camera _cam = Camera.main;
+
+            _mousePos.x = Input.mousePosition.x;
+            _mousePos.y = Input.mousePosition.y;
+
+            Vector3 _point;
+
+            _point = _cam.ScreenToWorldPoint(new Vector3(_mousePos.x, _mousePos.y, _cam.nearClipPlane));
+
+            transform.position = Vector3.Lerp(transform.position, _point, smoothTime);
         }
         else
         {
-            transform.position = Vector3.Lerp(transform.position, m_initialPosition, smoothTime * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, m_initialPosition, smoothTime);
         }
     }
 
