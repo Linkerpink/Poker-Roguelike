@@ -51,8 +51,8 @@ public class Deck : MonoBehaviour
 
     private void AddCardToHand()
     {
-        RectTransform _handRectTransform =  GameObject.Find("Hand").GetComponent<RectTransform>();
-        GameObject _playingCard = Instantiate(m_playingCardPrefab, _handRectTransform);
+        Transform _handTransform =  GameObject.Find("Hand").GetComponent<Transform>();
+        GameObject _playingCard = Instantiate(m_playingCardPrefab, _handTransform);
         _playingCard.GetComponent<PlayingCard>().SetCardValues(ChooseRandomCard());
     }
 

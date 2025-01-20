@@ -16,5 +16,5 @@ MonoBehaviour:
   cardValue: 8
   suit: 1
   cardIcon: {fileID: 21300000, guid: 87c62acc4cce89e45bb20051a91e036c, type: 3}
-  cardDesign: {fileID: 3090975690734689321, guid: d6989175250bada4a83f987b9d7f22de, type: 3}
+  cardDesign: {fileID: 743941818888758078, guid: 5c02dd52aa1de0f40bb23c3074a97883, type: 3}
   cardColor: {r: 0.13725491, g: 0.34901962, b: 0.33333334, a: 1}
