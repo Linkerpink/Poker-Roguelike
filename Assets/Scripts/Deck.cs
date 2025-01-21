@@ -13,7 +13,6 @@ public class Deck : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI m_deckText;
 
-
     private void Start()
     {
         SetCards();
