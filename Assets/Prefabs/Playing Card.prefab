@@ -446,6 +446,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f95bed3604dab54abffacdb0c231e59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_selectable: 1
+  m_dragable: 1
   playingCardSO: {fileID: 0}
   m_cardTexts:
   - {fileID: 8219442652343519228}

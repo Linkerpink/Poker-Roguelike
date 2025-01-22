@@ -8,22 +8,19 @@ public class Deck : MonoBehaviour
     [SerializeField] private GameObject m_playingCardPrefab;
 
     [SerializeField] private List<PlayingCardSO> m_playingCardSOList;
-    private List<PlayingCardSO> m_handList = new List<PlayingCardSO>();
-    private List<PlayingCardSO> m_remainingDeckCards = new List<PlayingCardSO>();
+    public List<PlayingCardSO> handList = new();
+    private List<PlayingCardSO> m_remainingDeckCards = new();
+
+    private List<PlayingCardSO> m_selectedCards = new();
 
     [SerializeField] private TextMeshProUGUI m_deckText;
+
+    [SerializeField] private float cardDrawTime = 0.25f;
 
     private void Start()
     {
         SetCards();
-    }
-
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.A))
-        {
-            AddCardToHand();
-        }
+        StartCoroutine(DrawCardsToHand(8));
     }
 
     private PlayingCardSO ChooseRandomCard()
@@ -34,7 +31,7 @@ public class Deck : MonoBehaviour
         
             _card = m_remainingDeckCards[Random.Range(0, m_remainingDeckCards.Count)];
 
-            m_handList.Add(_card);
+            handList.Add(_card);
             m_remainingDeckCards.Remove(_card);
 
             m_deckText.SetText(m_remainingDeckCards.Count.ToString() + " / " + m_playingCardSOList.Count.ToString());
@@ -50,14 +47,33 @@ public class Deck : MonoBehaviour
 
     private void AddCardToHand()
     {
-        Transform _handTransform =  GameObject.Find("Hand").GetComponent<Transform>();
-        GameObject _playingCard = Instantiate(m_playingCardPrefab, _handTransform);
+        GameObject _playingCard = Instantiate(m_playingCardPrefab);
         _playingCard.GetComponent<PlayingCard>().SetCardValues(ChooseRandomCard());
     }
 
-   private void SetCards()
+    private void SetCards()
     {
         m_remainingDeckCards = new List<PlayingCardSO>(m_playingCardSOList);
         m_deckText.SetText(m_remainingDeckCards.Count.ToString() + " / " + m_playingCardSOList.Count.ToString());
+    }
+
+    public void SelectCard(PlayingCardSO _card)
+    {
+        m_selectedCards.Add(_card);
+    }
+
+    public void DeselectCard(PlayingCardSO _card)
+    {
+        m_selectedCards.Remove(_card);
+    }
+
+    private IEnumerator DrawCardsToHand(int _cardAmount)
+    {
+        for (int i = 0; i < _cardAmount; i++)
+        {
+            AddCardToHand();
+            yield return new WaitForSeconds(cardDrawTime);
+        }
+        
     }
 }
