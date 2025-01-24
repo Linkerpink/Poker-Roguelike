@@ -13,9 +13,12 @@ public class PlayingCard : Card
 
     [SerializeField] private GameObject m_cardDesignParent;
 
-    public void SetCardValues(PlayingCardSO _playingCardSO)
+    public int CardPositionIndex { get; private set; } = -1;
+
+    public void SetCardValues(PlayingCardSO _playingCardSO, int positionIndex)
     {
         playingCardSO = _playingCardSO;
+        CardPositionIndex = positionIndex; // Assign the position index
 
         foreach (TextMeshProUGUI _text in m_cardTexts)
         {
@@ -36,7 +39,7 @@ public class PlayingCard : Card
             if (_child.gameObject.name == "Card Design Canvas")
             {
                 Transform _cardDesignCanvas = _child.GetComponent<Transform>();
-                
+
                 foreach (Transform _c in _cardDesignCanvas.transform)
                 {
                     Image _icon = _c.gameObject.GetComponent<Image>();

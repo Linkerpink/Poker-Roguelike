@@ -36,26 +36,24 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         m_hand = GameObject.Find("Hand");
 
-        foreach (Transform _child in m_hand.transform)
+        if (m_hand != null)
         {
-            int m_handCount = m_deck.handList.Count;
-
-            switch (m_handCount)
+            foreach (Transform _child in m_hand.transform)
             {
-                case 0:
-                break;
+                int m_handCount = m_deck.handList.Count;
 
-                case 1:
-                transform.SetParent(m_hand.transform);
-                break;
-                
+                switch (m_handCount)
+                {
+                    case 0:
+                    break;
+
+                    case 1:
+                    transform.SetParent(m_hand.transform);
+                    break;
+                    
+                }
             }
-            
-            
-            
         }
-
-        
     }
 
     private void Update()
@@ -89,16 +87,35 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         if (Input.GetMouseButtonUp(0))
         {
-            if (m_gameManager.isDragging)
+            m_dragging = false;
+            m_gameManager.ChangeDragging(false);
+            Debug.Log(m_deck.selectedCards.Count);
+            
+            if (m_selectable && m_mouseOver)
             {
-                m_dragging = false;
-                m_gameManager.ChangeDragging(false);
-            }
-            else
-            {
-                if (m_selectable && m_mouseOver)
+                if (!m_selected && m_deck.selectedCards.Count < 5)
                 {
-                    m_selected = !m_selected;
+                    m_selected = true;
+
+                    PlayingCardSO _card;
+                    _card = GetComponent<PlayingCard>().playingCardSO;
+
+                    if (_card != null)
+                    {
+                        m_deck.SelectCard(_card);
+                    }
+                }
+                else
+                {
+                    m_selected = false;
+
+                    PlayingCardSO _card;
+                    _card = GetComponent<PlayingCard>().playingCardSO;
+
+                    if (_card != null)
+                    {
+                        m_deck.DeselectCard(_card);
+                    }
                 }
             }
         }
