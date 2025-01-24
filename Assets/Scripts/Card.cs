@@ -89,7 +89,6 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             m_dragging = false;
             m_gameManager.ChangeDragging(false);
-            Debug.Log(m_deck.selectedCards.Count);
             
             if (m_selectable && m_mouseOver)
             {

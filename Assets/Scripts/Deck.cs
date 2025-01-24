@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Deck : MonoBehaviour
@@ -17,11 +18,28 @@ public class Deck : MonoBehaviour
 
     [SerializeField] private Transform[] m_cardPositions;
     private bool[] m_positionTaken;
+
+    private GameManager m_gameManager;
+
+    private void Awake()
+    {
+        m_gameManager = FindObjectOfType<GameManager>();
+    }
+
     private void Start()
+    {
+        StartRound();
+    }
+
+    private void StartRound()
     {
         InitializeCardPositions();
         SetCards();
         StartCoroutine(DrawCardsToHand(8));
+
+        m_gameManager.round += 1;
+        m_gameManager.roundScore = 0;
+        m_gameManager.roundScoreQuota *= 1.25f;
     }
 
     private void InitializeCardPositions()
@@ -102,5 +120,24 @@ public class Deck : MonoBehaviour
         {
             m_positionTaken[positionIndex] = false;
         }
+    }
+
+    public void StartHandCheck()
+    {
+        if (m_gameManager.gameState == GameManager.GameStates.Game)
+        {
+            StartCoroutine(HandCheck());
+        }
+    }
+
+    public IEnumerator HandCheck()
+    {
+        foreach (PlayingCardSO _card in selectedCards)
+        {
+            m_gameManager.roundScore += _card.cardValue;
+            yield return new WaitForSeconds(0.25f);
+        }
+        yield return new WaitForSeconds(1);
+        m_gameManager.gameState = GameManager.GameStates.Shop;
     }
 }
