@@ -19,6 +19,9 @@ public class Deck : MonoBehaviour
     [SerializeField] private Transform[] m_cardPositions;
     private bool[] m_positionTaken;
 
+    [SerializeField] private GameObject deathScreen;
+    [SerializeField] private TextMeshProUGUI roundScoreQuotaText;
+
     private GameManager m_gameManager;
 
     private void Awake()
@@ -28,7 +31,13 @@ public class Deck : MonoBehaviour
 
     private void Start()
     {
+        deathScreen.SetActive(false);
         StartRound();
+    }
+
+    private void Update()
+    {
+        roundScoreQuotaText.SetText("Round score quota: " + m_gameManager.roundScoreQuota.ToString());
     }
 
     private void StartRound()
@@ -74,7 +83,7 @@ public class Deck : MonoBehaviour
         PlayingCardSO _cardSO = ChooseRandomCard();
         if (_cardSO == null) return;
 
-        GameObject _playingCard = Instantiate(m_playingCardPrefab, m_cardPositions[positionIndex].position, Quaternion.identity);
+        GameObject _playingCard = Instantiate(m_playingCardPrefab, m_cardPositions[positionIndex].position, Quaternion.identity, m_cardPositions[positionIndex]);
         _playingCard.GetComponent<PlayingCard>().SetCardValues(_cardSO, positionIndex);
 
         m_positionTaken[positionIndex] = true;
@@ -89,9 +98,11 @@ public class Deck : MonoBehaviour
         return -1;
     }
 
-    private void SetCards()
+    public void SetCards()
     {
         m_remainingDeckCards = new List<PlayingCardSO>(m_playingCardSOList);
+
+        
         m_deckText.SetText(m_remainingDeckCards.Count.ToString() + " / " + m_playingCardSOList.Count.ToString());
     }
 
@@ -122,6 +133,35 @@ public class Deck : MonoBehaviour
         }
     }
 
+    public void ResetDeck()
+    {
+        // Clear all cards from the positions
+        foreach (Transform cardPosition in m_cardPositions)
+        {
+            foreach (Transform child in cardPosition)
+            {
+                Destroy(child.gameObject); // Destroy child card objects
+            }
+        }
+
+        // Clear card lists
+        selectedCards.Clear();
+        handList.Clear();
+
+        // Reset all position states
+        InitializeCardPositions();
+
+        // Reset the deck
+        SetCards();
+
+        // Draw a new set of cards
+        StartCoroutine(DrawCardsToHand(8));
+    }
+
+
+
+
+
     public void StartHandCheck()
     {
         if (m_gameManager.gameState == GameManager.GameStates.Game)
@@ -138,6 +178,12 @@ public class Deck : MonoBehaviour
             yield return new WaitForSeconds(0.25f);
         }
         yield return new WaitForSeconds(1);
+        
+        if (m_gameManager.roundScore < m_gameManager.roundScoreQuota)
+        {
+            deathScreen.SetActive(true);
+        }
+
         m_gameManager.gameState = GameManager.GameStates.Shop;
     }
 }

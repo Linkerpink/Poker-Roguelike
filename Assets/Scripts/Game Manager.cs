@@ -10,11 +10,13 @@ public class GameManager : MonoBehaviour
     private static GameManager instance;
 
     public int round = -1;
-    public float roundScoreQuota = -1;
+    public float roundScoreQuota = 10;
     public float roundScore = -1;
 
     private TextMeshProUGUI m_roundScoreText;
     private TextMeshProUGUI m_handTypeText;
+
+    private Deck m_deck;
 
     private GameObject m_shop;
 
@@ -75,6 +77,7 @@ public class GameManager : MonoBehaviour
         {
             gameState = GameStates.Game;
             m_shop = GameObject.Find("Shop");
+            m_deck = FindObjectOfType<Deck>();
             m_roundScoreText = GameObject.Find("Round Score Text")?.GetComponent<TextMeshProUGUI>();
 
             if (m_shop == null || m_roundScoreText == null)
@@ -134,6 +137,14 @@ public class GameManager : MonoBehaviour
         if (Enum.TryParse(_state, true, out GameStates newState))
         {
             gameState = newState;
+            if (newState == GameStates.Game)
+            {
+                //Reset cards and stuff
+                roundScore = 0;
+                roundScoreQuota += 10;
+                m_deck.ResetDeck();
+            }
+
             Debug.Log("Game state changed to: " + gameState);
         }
         else
